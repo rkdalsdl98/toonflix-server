@@ -37,4 +37,4 @@ lerna-debug.log*
 # Menual config file
 ormconfig
 
-*.env
+.env
