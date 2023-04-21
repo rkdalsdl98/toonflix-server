@@ -17,14 +17,7 @@ export class WebtoonService {
     }
 
     async getAllToons(): Promise<WebtoonEntity[] | null> {
-        const today : Date = new Date()
-        const weekly : number = today.getDay()
-        
-        return await this.webtoonRepository.find({
-            where: {
-                weekly
-            }
-        })
+        return await this.webtoonRepository.find({})
     }
 
     async clearTable(): Promise<void> {
