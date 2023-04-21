@@ -15,6 +15,13 @@ export class WebtoonEntity extends BaseEntity {
 
     @Column({
         nullable: false,
+        length: 20,
+        unique: true
+    })
+    webtoon_id : string
+
+    @Column({
+        nullable: false,
         length: 50,
     })
     title : string
@@ -24,12 +31,6 @@ export class WebtoonEntity extends BaseEntity {
         length: 255,
     })
     thumb : string
-
-    @Column({
-        nullable: false,
-        length: 20,
-    })
-    webtoon_id : string
 
     @Column({
         nullable: false,
@@ -52,4 +53,22 @@ export class WebtoonEntity extends BaseEntity {
         nullable: false
     })
     company : string
+
+    @Column({
+        nullable: false,
+        type: "text",
+    })
+    about: string
+
+    @Column({
+        nullable: false,
+        length: 50
+    })
+    genre: string
+
+    @Column({
+        nullable: false,
+        length: 10
+    })
+    age: string
 }

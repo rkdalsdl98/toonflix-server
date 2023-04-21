@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, InsertResult } from 'typeorm';
 
-import { WebtoonDto } from './dto/webtoon.dto';
+import { ToonFlixWebtoonDto } from './dto/toonflixWebtoon.dto';
 import { WebtoonEntity } from './entities/webtoon.entity';
 
 @Injectable()
@@ -26,17 +26,23 @@ export class WebtoonService {
             }
         })
     }
+
+    async clearTable(): Promise<void> {
+        await this.webtoonRepository.clear()
+    }
     
-    async insertOrUpdateWebtoon(webtoon: WebtoonDto[] | WebtoonDto) : Promise<InsertResult> {
+    async insertOrUpdateWebtoon(webtoon: ToonFlixWebtoonDto[] | ToonFlixWebtoonDto) : Promise<InsertResult> {
         return await this.webtoonRepository.createQueryBuilder()
         .insert()
         .into(WebtoonEntity,[
-            'id',
             'title',
             'thumb',
             'webtoon_id',
             'weekly',
             'company',
+            'about',
+            'genre',
+            'age',
         ])
         .values(webtoon)
         .orUpdate(
@@ -48,6 +54,9 @@ export class WebtoonService {
                 'like_count',
                 'weekly',
                 'company',
+                'about',
+                'genre',
+                'age',
             ],
             [
                 'id'

@@ -6,6 +6,7 @@ import {
 import axios from 'axios';
 import { WebtoonEntity } from './entities/webtoon.entity';
 import { WebtoonDto } from './dto/webtoon.dto';
+import { mergeWebtoonDetailData } from 'src/lib/webtoonFactory';
 
 require('dotenv').config()
 
@@ -26,46 +27,29 @@ export class WebtoonController {
      * 업데이트 루틴을 추가해주어야 함.
      */
     private async init() : Promise<void> {
-        const request = await axios.get(`${BASE_URL}today`)
-        const datas = request.data
+        try {
+            await this.webtoonService.clearTable()
+            
+            const requestList = await axios.get(`${BASE_URL}today`)
+            const list = requestList.data
 
-        const today : Date = new Date()
-        const weekly : number = today.getDay()
+            const today : Date = new Date()
+            const weekly : number = today.getDay()
 
-        const webtoons : WebtoonDto[] = await this.webtoonService.getAllToons()
-        const company : Company = 'naver'
-
-        let len : number = webtoons.length
-
-        if(len > 0) {
-            datas.forEach(async webtoon => {
-                const { id: webtoon_id, title, thumb } = webtoon
-                if(!webtoons.find(toon => toon.webtoon_id === webtoon_id)) {
-                    webtoons.push({
-                        id: len++,
-                        webtoon_id,
-                        title,
-                        thumb,
-                        weekly,
-                        company
-                    })
-                }
-            })
-        } else {
-            datas.forEach(async webtoon => {
-                const { id: webtoon_id, title, thumb } = webtoon
-                webtoons.push({
-                    id: ++len,
-                    webtoon_id,
+            for(let i=0; i<list.length; ++i) {
+                const { id, title, thumb } = list[i]
+                const webtoon : WebtoonDto = {
+                    webtoon_id: id,
                     title,
                     thumb,
                     weekly,
-                    company
-                })
-            });
+                    company: 'naver'
+                }
+                mergeWebtoonDetailData(webtoon, this.webtoonService)
+            }
+        } catch(e) {
+            console.log(e)
         }
-        
-        await this.webtoonService.insertOrUpdateWebtoon(webtoons)
     }
 
     @Get('list')

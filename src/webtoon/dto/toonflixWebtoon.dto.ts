@@ -1,6 +1,6 @@
 import { IsNumber, IsString } from "class-validator";
 
-export class WebtoonDto {
+export class ToonFlixWebtoonDto {
     @IsString()
     readonly webtoon_id : string
 
@@ -15,4 +15,13 @@ export class WebtoonDto {
 
     @IsString()
     readonly company : string
+    
+    @IsString()
+    readonly about: string
+
+    @IsString()
+    readonly genre: string
+
+    @IsString()
+    readonly age: string
 }
