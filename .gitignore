@@ -35,7 +35,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # Menual config file
-ormconfig
+ormconfig.ts
 
 .env
 env
