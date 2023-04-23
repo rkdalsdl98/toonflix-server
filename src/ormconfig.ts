@@ -1,5 +1,6 @@
 import { DataSourceOptions } from 'typeorm';
 import { WebtoonEntity } from './webtoon/entities/webtoon.entity';
+import { EpisodeEntity } from './webtoon/entities/episode.entity';
 
 const ormconfig: DataSourceOptions = {
     "type": "mysql",
@@ -10,6 +11,7 @@ const ormconfig: DataSourceOptions = {
     "database": "toonflix",
     "entities": [
         WebtoonEntity,
+        EpisodeEntity
     ],
     "timezone": 'Z',
     "synchronize": true,

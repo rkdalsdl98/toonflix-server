@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { WebtoonService } from './webtoon.service';
+import { EpisodeService, WebtoonService } from './webtoon.service';
 import { TypeOrmModule } from '@nestjs/typeorm/dist';
 
 import { WebtoonEntity } from './entities/webtoon.entity';
+import { EpisodeEntity } from './entities/episode.entity';
 
 import { WebtoonController } from './webtoon.controller';
 
@@ -10,6 +11,7 @@ import { WebtoonController } from './webtoon.controller';
   imports: [
     TypeOrmModule.forFeature([
     WebtoonEntity,
+    EpisodeEntity,
   ]),
 ],
   controllers: [
@@ -17,6 +19,7 @@ import { WebtoonController } from './webtoon.controller';
   ],
   providers: [
     WebtoonService,
+    EpisodeService
   ]
 })
 export class WebtoonModule {}

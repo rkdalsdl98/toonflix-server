@@ -1,22 +1,18 @@
 import { Controller, Get, Post, Put, Delete, Param } from '@nestjs/common';
 import { 
+    EpisodeService,
     WebtoonService
 } from './webtoon.service';
 
-import axios from 'axios';
 import { WebtoonEntity } from './entities/webtoon.entity';
-import { WebtoonDto } from './dto/webtoon.dto';
-import { mergeWebtoonDetailData } from 'src/lib/webtoonFactory';
-
-require('dotenv').config()
-
-const BASE_URL : string = process.env.BASEURL
+import { EpisodeEntity } from './entities/episode.entity';
 
 @Controller('webtoon')
 export class WebtoonController {
 
     constructor(
         private readonly webtoonService: WebtoonService,
+        private readonly episodeService: EpisodeService
     ) {
         this.init()
     }
@@ -28,25 +24,8 @@ export class WebtoonController {
      */
     private async init() : Promise<void> {
         try {
-            await this.webtoonService.clearTable()
-            
-            const requestList = await axios.get(`${BASE_URL}today`)
-            const list = requestList.data
-
-            const today : Date = new Date()
-            const weekly : number = today.getDay()
-
-            for(let i=0; i<list.length; ++i) {
-                const { id, title, thumb } = list[i]
-                const webtoon : WebtoonDto = {
-                    webtoon_id: id,
-                    title,
-                    thumb,
-                    weekly,
-                    company: 'naver'
-                }
-                mergeWebtoonDetailData(webtoon, this.webtoonService)
-            }
+            await this.webtoonService.load()
+            await this.episodeService.load(0)
         } catch(e) {
             console.log(e)
         }
@@ -56,6 +35,14 @@ export class WebtoonController {
     getAllToons() : Promise<WebtoonEntity[] | null> {
         return this.webtoonService.getAllToons()
     }
+
+    @Get('episodes')
+    getAllEpisodes() : Promise<EpisodeEntity[] | null> {
+        return this.episodeService.getAllEpisode()
+    }
+
+    /* 쿼리, 파라미터를 받는 라우터와 위치를 나누어야 하며 */
+    /* 일반 라우터를 상단에 그 외에 라우터를 하단에 배치한다. */
 
     @Get('/:id')
     getWebtoonById(@Param('id') id : string) : Promise<WebtoonEntity | null> {
