@@ -48,6 +48,11 @@ export class WebtoonController {
     getWebtoonById(@Param('id') id : string) : Promise<WebtoonEntity | null> {
         return this.webtoonService.findOneById(id)
     }
+
+    @Get('/:id/episode')
+    getEpisodeById(@Param('id') id : string) : Promise<EpisodeEntity | null> {
+        return this.episodeService.findOneById(id)
+    }
 }
 
 type Company = 'naver' | 'kakao' | 'lezhin'

@@ -115,10 +115,9 @@ export class EpisodeService {
         private episodeRepository : Repository<EpisodeEntity>,
     ) {}
 
-    async findOneById(webtoonId: string, episodeId : string): Promise<EpisodeEntity | null> {
+    async findOneById(webtoonId: string): Promise<EpisodeEntity | null> {
         return await this.episodeRepository.findOneBy({
-                webtoon_id: webtoonId, 
-                episode_id: episodeId 
+                webtoon_id: webtoonId
             });
     }
 
@@ -189,7 +188,7 @@ export class EpisodeService {
                         const [ episodeData ] = requestEpisodes.data // 최신화만 가져오기
                         const episode : EpisodeDto = {
                             webtoon_id: webtoonId,
-                            episode_id: episodeData.id,
+                            episode_id: `${parseInt(episodeData.id) + 1}`,
                             title: episodeData.title,
                             thumb: episodeData.thumb,
                             uptime: episodeData.date,
