@@ -113,6 +113,8 @@ export class EpisodeService {
     constructor(
         @InjectRepository(EpisodeEntity)
         private episodeRepository : Repository<EpisodeEntity>,
+        @InjectRepository(WebtoonEntity)
+        private webtoonRepository : Repository<WebtoonEntity>,
     ) {}
 
     async findOneById(webtoonId: string): Promise<EpisodeEntity | null> {
@@ -131,7 +133,7 @@ export class EpisodeService {
 
         const episode : EpisodeEntity | null = await this.episodeRepository.findOneBy({id: 1})
 
-        if(episode || episode.weekly !== weekly) return true
+        if(episode === null || episode.weekly !== weekly) return true
         return false
     }
 
@@ -174,15 +176,15 @@ export class EpisodeService {
             if(needUpdate) {
                 console.log('에피소드 로드 시작.')
 
-                const episodes : EpisodeEntity[] = await this.episodeRepository.find()
-                if(episodes.length > 0) {
+                const webtoons : WebtoonEntity[] = await this.webtoonRepository.find()
+                if(webtoons.length > 0) {
                     await this.episodeRepository.clear()
 
                     const today : Date = new Date()
                     const weekly : number = today.getDay()
 
-                    for(let i=0; i<episodes.length; ++i) {
-                        const webtoonId = episodes[i].webtoon_id
+                    for(let i=0; i<webtoons.length; ++i) {
+                        const webtoonId = webtoons[i].webtoon_id
                         const requestEpisodes = await axios.get(`${BASE_URL}${webtoonId}/episodes`)
 
                         const [ episodeData ] = requestEpisodes.data // 최신화만 가져오기
@@ -195,7 +197,7 @@ export class EpisodeService {
                             weekly
                         }
 
-                        await this.insertOrUpdateEpisode(episode)
+                        await this.insertOrUpdateEpisode(episode);
                     }
 
                     console.log('에피소드 로드 완료.')
