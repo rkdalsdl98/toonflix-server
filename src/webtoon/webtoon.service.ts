@@ -129,9 +129,9 @@ export class EpisodeService {
         const today : Date = new Date()
         const weekly : number = today.getDay()
 
-        const episodes = await this.getAllEpisode()
+        const episode : EpisodeEntity | null = await this.episodeRepository.findOneBy({id: 1})
 
-        if(episodes.length < 1 || episodes[0].weekly !== weekly) return true
+        if(episode || episode.weekly !== weekly) return true
         return false
     }
 
