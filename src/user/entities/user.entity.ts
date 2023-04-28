@@ -20,7 +20,7 @@ export class UserEntity extends BaseEntity {
 
     @Column({
         nullable: false,
-        length: 30
+        type: 'text'
     })
     pass: string
 
@@ -39,13 +39,18 @@ export class UserEntity extends BaseEntity {
 
     @Column({
         nullable: true,
-        type: 'text'
+        type: 'text',
     })
     liked: string
 
     @Column({
         nullable: false,
-        type: 'datetime'
     })
-    birth: Date
+    birth: string
+
+    @Column({
+        nullable: false,
+        type: 'text'
+    })
+    salt: string
 }

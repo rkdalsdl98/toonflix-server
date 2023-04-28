@@ -40,3 +40,5 @@ ormconfig.ts
 .env
 env
 *.env
+
+private

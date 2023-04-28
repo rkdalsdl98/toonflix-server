@@ -1,4 +1,4 @@
-import { IsDate, IsNumber, IsString } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 
 export class UserDto {
     @IsString()
@@ -16,6 +16,6 @@ export class UserDto {
     @IsString()
     liked: string
 
-    @IsDate()
-    birth: Date
+    @IsString()
+    birth: string
 }
