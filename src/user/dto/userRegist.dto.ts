@@ -2,17 +2,22 @@ import { IsString } from "class-validator";
 
 export class UserRegistDto {
     @IsString()
-    name: string
+    readonly name: string
 
     @IsString()
-    pass: string
+    readonly pass: string
 
     @IsString()
-    nickname: string
+    readonly nickname: string
 
     @IsString()
-    birth: string
+    readonly birth: string
 
     @IsString()
-    salt: string
+    readonly salt: string
+
+    @IsString()
+    readonly liked: string
 }
+
+// 회원가입시 받을 데이터 구조

@@ -25,7 +25,7 @@ export async function mergeWebtoonDetailData(webtoon: WebtoonDto, webtoonService
             ...webtoon,
             ...webtoonDetail
         }
-
+        
         if(webtoonService) await webtoonService.insertOrUpdateWebtoon(toonflixWebtoon)
         else return toonflixWebtoon
     } catch(e) {

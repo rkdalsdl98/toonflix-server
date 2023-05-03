@@ -1,21 +1,23 @@
 import { IsNumber, IsString } from "class-validator";
 
 export class UserDto {
-    @IsString()
-    name: string
+    @IsNumber()
+    readonly pk : number
 
     @IsString()
-    pass: string
-
-    @IsString()
-    nickname: string
+    readonly nickname: string
 
     @IsNumber()
-    cash: number
+    readonly cash: number
 
     @IsString()
-    liked: string
+    readonly liked: string
 
     @IsString()
-    birth: string
+    readonly birth: string
+
+    @IsString()
+    readonly userId: string
 }
+
+// 로그인 이후 유저가 전달 받을 데이터 구조

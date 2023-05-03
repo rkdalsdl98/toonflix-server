@@ -9,8 +9,8 @@ import config from './ormconfig';
 
 @Module({
   imports: [
-    WebtoonModule,
     TypeOrmModule.forRoot(config),
+    WebtoonModule,
     UserModule
   ],
   controllers: [AppController],

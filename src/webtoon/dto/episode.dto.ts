@@ -2,20 +2,20 @@ import { IsNumber, IsString } from "class-validator";
 
 export class EpisodeDto {
     @IsString()
-    webtoon_id: string
+    readonly webtoon_id: string
 
     @IsString()
-    thumb: string
+    readonly thumb: string
 
     @IsString()
-    episode_id: string
+    readonly episode_id: string
 
     @IsString()
-    title: string
+    readonly title: string
 
     @IsString()
-    uptime: string
+    readonly uptime: string
 
     @IsNumber()
-    weekly: number
+    readonly weekly: number
 }

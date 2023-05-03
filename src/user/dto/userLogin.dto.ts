@@ -2,8 +2,13 @@ import { IsString } from "class-validator";
 
 export class UserLoginDto {
     @IsString()
-    userId: string
+    readonly userId: string
 
     @IsString()
-    userPass: string
+    readonly userPass: string
+
+    @IsString()
+    readonly day: string
 }
+
+// 로그인시 받을 데이터 구조

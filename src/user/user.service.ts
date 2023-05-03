@@ -1,40 +1,68 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
-import { InsertResult, Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { UserLoginDto } from './dto/userLogin.dto';
 import { UserRegistDto } from './dto/userRegist.dto';
 import { cryptionPass, hashing } from './private/verify';
+import { UserDto } from './dto/user.dto';
+import { UserLikedRequest } from './dto/userLiked.dto';
+import { WebtoonService } from 'src/webtoon/webtoon.service';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity)
         private userRepository : Repository<UserEntity>,
+        private readonly webtoonService : WebtoonService
     ) {
     }
 
-    async userLogin(user : UserLoginDto) : Promise<UserEntity | null> {
+    async userLogin(user : UserLoginDto) : Promise<UserDto | null> {
         try {
             const findUser = await this.getUserById(user.userId)
             const result = hashing(user, findUser)
 
-            if(result) return findUser
+            const today : Date = new Date()
+            const day = ("0" + today.getDate()).slice(-2)
+            const month = ("0" + (today.getMonth() + 1)).slice(-2)
+            
+            if(result) {
+                if(day !== user.day) {
+                    await this.resetLiked({
+                        pk: findUser.id, 
+                        userId: findUser.name
+                    })
+                }
+
+                console.log(`[${today.getFullYear()}-${month}-${day}]:${findUser.name}:유저 로그인`)
+                return {
+                    pk: findUser.id,
+                    nickname: findUser.nickname,
+                    cash: findUser.cash,
+                    liked: findUser.liked,
+                    birth: findUser.birth,
+                    userId: findUser.name
+                }
+            } else {
+                return null
+            }
         } catch(e) {
-            return null
+            return null;
         }
     }
 
-    async registUser(regist: UserRegistDto) {
+    async registUser(regist: UserRegistDto) : Promise<void> {
         const { pass } = regist
         const { salt, cryption } = cryptionPass(pass) 
 
-        this.insertOrUpdateUser({
+        await this.insertOrUpdateUser({
             name: regist.name,
             pass: cryption,
             salt,
             nickname: regist.nickname,
-            birth: regist.birth
+            birth: regist.birth,
+            liked: ''
         })
     }
 
@@ -51,15 +79,41 @@ export class UserService {
         })
     }
 
+    async resetLiked(resetUser : any) : Promise<void> {
+        await this.userRepository.createQueryBuilder()
+            .update(UserEntity)
+            .set({
+                liked: ''
+            })
+            .andWhere('pk = :requestPk', {requestPk: parseInt(resetUser.pk)})
+            .where('name = :userId', {userId: resetUser.userId})
+            .execute()
+    }
+
+    async updateUserLiked(req: UserLikedRequest) : Promise<void> {
+        await this.userRepository.createQueryBuilder()
+            .update(UserEntity)
+            .set({
+                liked: req.likes
+            })
+            .andWhere('pk = :requestPk', {requestPk: parseInt(req.pk)})
+            .where('name = :userId', {userId: req.userId})
+            .execute()
+        
+        if(req.isSubtract === 'true') await this.webtoonService.subtractLikeCount(req.webtoon_id)
+        else await this.webtoonService.increaseLikeCount(req.webtoon_id)
+    }
+
     async insertOrUpdateUser(regist: UserRegistDto) : Promise<void> {
-        const result : InsertResult = await this.userRepository.createQueryBuilder()
+        await this.userRepository.createQueryBuilder()
         .insert()
         .into(UserEntity,[
             'name',
             'pass',
             'nickname',
             'birth',
-            'salt'
+            'salt',
+            'liked'
         ])
         .values(regist)
         .orUpdate(
@@ -68,7 +122,8 @@ export class UserService {
                 'pass',
                 'nickname',
                 'birth',
-                'salt'
+                'salt',
+                'liked'
             ],
             [
                 'id'
@@ -77,6 +132,6 @@ export class UserService {
                 skipUpdateIfNoValuesChanged: true
             }
         )
-        .execute()
+        .execute();
     }
 }

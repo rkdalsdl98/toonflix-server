@@ -40,6 +40,12 @@ export class WebtoonEntity extends BaseEntity {
 
     @Column({
         nullable: false,
+        default: 0
+    })
+    comment_count : number
+
+    @Column({
+        nullable: false,
         default: 200
     })
     price : number

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, InsertResult } from 'typeorm';
+import { Repository, InsertResult, UpdateResult } from 'typeorm';
 
 import { ToonFlixWebtoonDto } from './dto/toonflixWebtoon.dto';
 import { WebtoonEntity } from './entities/webtoon.entity';
@@ -9,6 +9,7 @@ import axios from 'axios';
 import { WebtoonDto } from './dto/webtoon.dto';
 import { mergeWebtoonDetailData } from 'src/lib/webtoonFactory';
 import { EpisodeDto } from './dto/episode.dto';
+import { CountsDto } from './dto/counts.dto';
 
 require('dotenv').config()
 
@@ -26,6 +27,35 @@ export class WebtoonService {
 
     async getAllToons() : Promise<WebtoonEntity[] | null> {
         return await this.webtoonRepository.find({})
+    }
+
+    async getWebtoonCounts(webtoonId : string) : Promise<CountsDto> {
+        const { like_count, comment_count } = await this.webtoonRepository.findOneBy({webtoon_id: webtoonId})
+        return { likecount: like_count, commentcount: comment_count }
+    }
+
+    async increaseLikeCount(webtoonId: string) : Promise<boolean> {
+        const result : UpdateResult = await this.webtoonRepository.createQueryBuilder()
+        .update(WebtoonEntity)
+        .set({
+            like_count: () => 'like_count + 1'
+        })
+        .where('webtoon_id = :webtoonId', {webtoonId})
+        .execute()
+
+        return result.affected === 1
+    }
+
+    async subtractLikeCount(webtoonId: string) : Promise<boolean> {
+        const result : UpdateResult = await this.webtoonRepository.createQueryBuilder()
+        .update(WebtoonEntity)
+        .set({
+            like_count: () => 'like_count - 1'
+        })
+        .where('webtoon_id = :webtoonId', {webtoonId})
+        .execute()
+
+        return result.affected === 1
     }
 
     async checkUpdatedByWeekly() : Promise<boolean> {

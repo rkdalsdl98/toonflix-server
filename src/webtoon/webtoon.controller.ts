@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Patch } from '@nestjs/common';
 import { 
     EpisodeService,
     WebtoonService
@@ -6,6 +6,7 @@ import {
 
 import { WebtoonEntity } from './entities/webtoon.entity';
 import { EpisodeEntity } from './entities/episode.entity';
+import { CountsDto } from './dto/counts.dto';
 
 @Controller('webtoon')
 export class WebtoonController {
@@ -49,9 +50,24 @@ export class WebtoonController {
         return this.webtoonService.findOneById(id)
     }
 
+    @Get('/counts/:id')
+    getWebtoonCounts(@Param('id') id : string) : Promise<CountsDto | null> {
+        return this.webtoonService.getWebtoonCounts(id)
+    }
+
     @Get('/:id/episode')
     getEpisodeById(@Param('id') id : string) : Promise<EpisodeEntity | null> {
         return this.episodeService.findOneById(id)
+    }
+
+    @Patch('/increase/like/:webtoonId')
+    increaseLikeCount(@Param('webtoonId') webtoonId : string) : Promise<boolean> {
+        return this.webtoonService.increaseLikeCount(webtoonId)
+    }
+
+    @Patch('/subtract/like/:webtoonId')
+    subtractLikeCount(@Param('webtoonId') webtoonId : string) : Promise<boolean> {
+        return this.webtoonService.subtractLikeCount(webtoonId)
     }
 }
 
