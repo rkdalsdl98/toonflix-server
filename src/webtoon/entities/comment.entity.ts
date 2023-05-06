@@ -19,9 +19,9 @@ export class CommentEntity extends BaseEntity{
 
     @Column({
         nullable: false,
-        type: 'datetime'
+        length: 10
     })
-    uptime : Date
+    uptime : string
 
     @Column({
         nullable: false,

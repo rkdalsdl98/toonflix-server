@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Param, Patch } from '@nestjs/common';
+import { Controller, Get, Param, Patch } from '@nestjs/common';
 import { 
     EpisodeService,
     WebtoonService

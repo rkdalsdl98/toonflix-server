@@ -45,6 +45,7 @@ export class UserEntity extends BaseEntity {
 
     @Column({
         nullable: false,
+        length: 10
     })
     birth: string
 

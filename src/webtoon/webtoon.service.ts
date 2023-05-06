@@ -62,9 +62,9 @@ export class WebtoonService {
         const today : Date = new Date()
         const weekly : number = today.getDay()
 
-        const webtoons = await this.getAllToons()
+        const webtoon : WebtoonEntity | null = await this.webtoonRepository.findOneBy({id: 1})
 
-        if(webtoons.length < 1 || webtoons[0].weekly !== weekly) return true
+        if(webtoon === null || webtoon.weekly !== weekly) return true
         return false
     }
     
@@ -212,6 +212,7 @@ export class EpisodeService {
 
                     const today : Date = new Date()
                     const weekly : number = today.getDay()
+                    const episodes : EpisodeDto[] = []
 
                     for(let i=0; i<webtoons.length; ++i) {
                         const webtoonId = webtoons[i].webtoon_id
@@ -226,10 +227,10 @@ export class EpisodeService {
                             uptime: episodeData.date,
                             weekly
                         }
-
-                        await this.insertOrUpdateEpisode(episode);
+                        episodes.push(episode)
                     }
 
+                    await this.insertOrUpdateEpisode(episodes);
                     console.log('에피소드 로드 완료.')
                 } else setTimeout(_=> this.load(++retryCount), 1000)
             } else console.log('에피소드 로드 완료.')

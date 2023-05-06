@@ -6,14 +6,12 @@ import { WebtoonEntity } from './entities/webtoon.entity';
 import { EpisodeEntity } from './entities/episode.entity';
 
 import { WebtoonController } from './webtoon.controller';
-import { CommentEntity } from './entities/comment.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
     WebtoonEntity,
     EpisodeEntity,
-    CommentEntity
   ]),
 ],
   controllers: [
