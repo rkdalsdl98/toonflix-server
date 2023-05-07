@@ -7,5 +7,7 @@
 # 현황
 
 댓글 전용 라우터 분할  
+댓글 정보 추가 루틴 생성  
+댓글 정보 조회 루틴 생성  
 
 Nest is [MIT licensed](LICENSE).

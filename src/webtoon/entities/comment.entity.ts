@@ -45,4 +45,15 @@ export class CommentEntity extends BaseEntity{
         length: 20
     })
     webtoon_id : string
+
+    @Column({
+        nullable: false,
+        default: 0
+    })
+    reply_count : number
+
+    @Column({
+        nullable:false
+    })
+    day : number
 }

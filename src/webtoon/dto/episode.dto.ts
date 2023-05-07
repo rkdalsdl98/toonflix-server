@@ -17,5 +17,5 @@ export class EpisodeDto {
     readonly uptime: string
 
     @IsNumber()
-    readonly weekly: number
+    readonly day: number
 }

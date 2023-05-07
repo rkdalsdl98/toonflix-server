@@ -1,24 +1,21 @@
 import { IsString, IsNumber } from "class-validator";
 
 export class CommentDto {
-    @IsNumber()
-    commentId : number
-
     @IsString()
-    commentText : string
-
-    @IsNumber()
-    likecount : number
+    comment_text : string
 
     @IsString()
     owner : string
 
     @IsNumber()
-    ownerId : number
+    owner_id : number
 
     @IsString()
-    webtoonId : string
+    webtoon_id : string
 
     @IsString()
     uptime : string
+
+    @IsNumber()
+    day : number
 }

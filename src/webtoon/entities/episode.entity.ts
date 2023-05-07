@@ -44,5 +44,5 @@ export class EpisodeEntity extends BaseEntity{
     @Column({
         nullable: false,
     })
-    weekly : number
+    day : number
 }

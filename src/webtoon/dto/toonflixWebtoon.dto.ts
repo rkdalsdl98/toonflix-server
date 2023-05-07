@@ -11,7 +11,7 @@ export class ToonFlixWebtoonDto {
     readonly thumb : string
 
     @IsNumber()
-    readonly weekly : number
+    readonly day : number
 
     @IsString()
     readonly company : string

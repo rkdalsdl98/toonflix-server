@@ -53,7 +53,7 @@ export class WebtoonEntity extends BaseEntity {
     @Column({
         nullable: false,
     })
-    weekly : number
+    day : number
 
     @Column({
         nullable: false

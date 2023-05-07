@@ -58,13 +58,37 @@ export class WebtoonService {
         return result.affected === 1
     }
 
-    async checkUpdatedByWeekly() : Promise<boolean> {
+    async increaseCommentCount(webtoonId: string) : Promise<boolean> {
+        const result : UpdateResult = await this.webtoonRepository.createQueryBuilder()
+        .update(WebtoonEntity)
+        .set({
+            comment_count: () => 'comment_count + 1'
+        })
+        .where('webtoon_id = :webtoonId', {webtoonId})
+        .execute()
+
+        return result.affected === 1
+    }
+
+    async subtractCommentCount(webtoonId: string) : Promise<boolean> {
+        const result : UpdateResult = await this.webtoonRepository.createQueryBuilder()
+        .update(WebtoonEntity)
+        .set({
+            comment_count: () => 'comment_count - 1'
+        })
+        .where('webtoon_id = :webtoonId', {webtoonId})
+        .execute()
+
+        return result.affected === 1
+    }
+
+    async checkUpdatedByDay() : Promise<boolean> {
         const today : Date = new Date()
-        const weekly : number = today.getDay()
+        const day : number = today.getDay()
 
         const webtoon : WebtoonEntity | null = await this.webtoonRepository.findOneBy({id: 1})
 
-        if(webtoon === null || webtoon.weekly !== weekly) return true
+        if(webtoon === null || webtoon.day !== day) return true
         return false
     }
     
@@ -75,7 +99,7 @@ export class WebtoonService {
             'title',
             'thumb',
             'webtoon_id',
-            'weekly',
+            'day',
             'company',
             'about',
             'genre',
@@ -89,7 +113,7 @@ export class WebtoonService {
                 'webtoon_id',
                 'price',
                 'like_count',
-                'weekly',
+                'day',
                 'company',
                 'about',
                 'genre',
@@ -107,7 +131,7 @@ export class WebtoonService {
 
     async load() : Promise<void> {
         try {
-            const needUpdate : boolean = await this.checkUpdatedByWeekly()
+            const needUpdate : boolean = await this.checkUpdatedByDay()
             if(needUpdate) {
                 console.log('웹툰 로드 시작.')
 
@@ -117,7 +141,7 @@ export class WebtoonService {
                 const list = requestList.data
 
                 const today : Date = new Date()
-                const weekly : number = today.getDay()
+                const day : number = today.getDay()
 
                 for(let i=0; i<list.length; ++i) {
                     const { id, title, thumb } = list[i]
@@ -125,7 +149,7 @@ export class WebtoonService {
                         webtoon_id: id,
                         title,
                         thumb,
-                        weekly,
+                        day,
                         company: 'naver'
                     }
                     mergeWebtoonDetailData(webtoon, this)
@@ -157,13 +181,13 @@ export class EpisodeService {
         return await this.episodeRepository.find()
     }
 
-    async checkUpdatedByWeekly() : Promise<boolean> {
+    async checkUpdatedByDay() : Promise<boolean> {
         const today : Date = new Date()
-        const weekly : number = today.getDay()
+        const day : number = today.getDay()
 
         const episode : EpisodeEntity | null = await this.episodeRepository.findOneBy({id: 1})
 
-        if(episode === null || episode.weekly !== weekly) return true
+        if(episode === null || episode.day !== day) return true
         return false
     }
 
@@ -176,7 +200,7 @@ export class EpisodeService {
             'episode_id',
             'title',
             'uptime',
-            'weekly',
+            'day',
         ])
         .values(episode)
         .orUpdate(
@@ -186,7 +210,7 @@ export class EpisodeService {
                 'episode_id',
                 'title',
                 'uptime',
-                'weekly',
+                'day',
             ],
             [
                 'id'
@@ -202,7 +226,7 @@ export class EpisodeService {
         if(retryCount > 10) {
             throw new Error('웹툰 목록 조회횟수 초과')
         } else {
-            const needUpdate : boolean = await this.checkUpdatedByWeekly()
+            const needUpdate : boolean = await this.checkUpdatedByDay()
             if(needUpdate) {
                 console.log('에피소드 로드 시작.')
 
@@ -211,7 +235,7 @@ export class EpisodeService {
                     await this.episodeRepository.clear()
 
                     const today : Date = new Date()
-                    const weekly : number = today.getDay()
+                    const day : number = today.getDay()
                     const episodes : EpisodeDto[] = []
 
                     for(let i=0; i<webtoons.length; ++i) {
@@ -225,7 +249,7 @@ export class EpisodeService {
                             title: episodeData.title,
                             thumb: episodeData.thumb,
                             uptime: episodeData.date,
-                            weekly
+                            day
                         }
                         episodes.push(episode)
                     }
