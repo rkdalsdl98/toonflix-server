@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Patch } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CommentEntity } from '../entities/comment.entity';
 import { CommentDto } from '../dto/comment.dto';
@@ -7,11 +7,6 @@ import { CommentDto } from '../dto/comment.dto';
 export class CommentController {
     constructor(private readonly commentService : CommentService) {
         this.commentService.checkNeedClearingComments()
-    }
-
-    @Get('/:webtoonId/all')
-    async getAllComments(@Param('webtoonId') webtoonId : string) : Promise<CommentEntity[] | null> {
-        return this.commentService.getAllComments(webtoonId)
     }
 
     @Post('add')
@@ -28,5 +23,15 @@ export class CommentController {
             "day": day
         }
         return this.commentService.addComment(wrap)
+    }
+
+    @Get('/:webtoonId/all')
+    async getAllComments(@Param('webtoonId') webtoonId : string) : Promise<CommentEntity[] | null> {
+        return this.commentService.getAllComments(webtoonId)
+    }
+
+    @Patch('like/increase/:commentId')
+    async increaseLikeCount(@Param('commentId') commentId : string) : Promise<void> {
+        return this.commentService.increaseCommentLikeCount(commentId)
     }
 }

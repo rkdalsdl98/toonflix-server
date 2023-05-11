@@ -4,7 +4,6 @@ import { CommentEntity } from '../entities/comment.entity';
 import { Repository } from 'typeorm';
 import { CommentDto } from '../dto/comment.dto';
 import { WebtoonService } from '../webtoon.service';
-import { defaultIfEmpty } from 'rxjs';
 
 @Injectable()
 export class CommentService {
@@ -35,6 +34,27 @@ export class CommentService {
         await this.webtoonService.increaseCommentCount(commentData.webtoon_id)
     }
 
+    async increaseCommentLikeCount(commentId : string) : Promise<void> {
+        await this.commentRepository.createQueryBuilder()
+        .update(CommentEntity)
+        .set({
+            like_count: () => 'like_count + 1'
+        })
+        .where('id = :commentId', {commentId: parseInt(commentId)})
+        .execute()
+    }
+
+    async increaseCommentReplyCount(commentId : string) : Promise<void> {
+        await this.commentRepository.createQueryBuilder()
+        .update(CommentEntity)
+        .set({
+            reply_count: () => 'reply_count + 1'
+        })
+        .where('id = :commentId', {commentId: parseInt(commentId)})
+        .execute()
+    }
+
+    /**********내부용**********/
     async checkNeedClearingComments() : Promise<void> {
         const today : Date = new Date()
         const day : number = today.getDay()
