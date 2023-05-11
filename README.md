@@ -1,21 +1,17 @@
-# 진행중
+# 기술 스택
 
+<p align="center">
+  <img src="https://cdn.jumpit.co.kr/images/stacks/nestjs.png" width="80" alt="Nest Logo" />
+  <img src="https://cdn.jumpit.co.kr/images/stacks/typescript.png" width="80" alt="Typescript Logo" />
+  <img src="https://cdn.jumpit.co.kr/images/stacks/node.js.png" width="80" alt="Nodejs Logo" />
+  <img src="https://cdn.jumpit.co.kr/images/stacks/TypeORM.png" width="80" alt="TypeORM Logo" />
+</p>
 
-# 현황
+# 소개
 
-dto 모델 분할  
-toonflix 전용 모델로 변환 루틴 작성  
-DB 테이블 변동및 추가  
-에피소드 테이블 추가  
-에피소드 라우터 분할  
-에피소드 테이블 연동  
-서비스 로드 루틴 추가  
-라우터 로드 상태 로그 추가  
-댓글 전용 라우터 분할  
-댓글 정보 추가 루틴 생성  
-댓글 정보 조회 루틴 생성  
-답글 라우터 분할  
-답글 조회 루틴 생성  
-답글 엔티티 구조가 변동 되었습니다  
+1인 개발 프로젝트로 '보던 웹툰만 보니 지겹네, 
+다른 웹툰을 찾아 보고싶은데 너무 귀찮아 웹툰 추천해주는 어플없나?' 에서 착안된 프로젝트 입니다.
+
+## License
 
 Nest is [MIT licensed](LICENSE).
