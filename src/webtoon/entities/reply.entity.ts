@@ -38,4 +38,9 @@ export class ReplyEntity extends BaseEntity {
         nullable : false
     })
     owner_id : number
+
+    @Column({
+        nullable: false,
+    })
+    day : number
 }

@@ -10,9 +10,12 @@ export class ReplyDto {
     @IsString()
     readonly owner : string
 
-    @IsNumber()
+    @IsString()
     readonly owner_id : string
 
     @IsString()
     readonly uptime : string
+
+    @IsNumber()
+    readonly day : number
 }

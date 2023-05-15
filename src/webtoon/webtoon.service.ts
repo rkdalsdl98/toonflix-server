@@ -10,6 +10,7 @@ import { WebtoonDto } from './dto/webtoon.dto';
 import { mergeWebtoonDetailData } from 'src/lib/webtoonFactory';
 import { EpisodeDto } from './dto/episode.dto';
 import { CountsDto } from './dto/counts.dto';
+import { load } from 'cheerio';
 
 require('dotenv').config()
 
@@ -21,6 +22,7 @@ export class WebtoonService {
         @InjectRepository(WebtoonEntity)
         private webtoonRepository : Repository<WebtoonEntity>,
     ) {}
+
     async findOneById(id : string): Promise<WebtoonEntity | null> {
         return await this.webtoonRepository.findOneBy({ webtoon_id: id });
     }
@@ -196,9 +198,9 @@ export class EpisodeService {
         .insert()
         .into(EpisodeEntity,[
             'webtoon_id',
-            'thumb',
             'episode_id',
             'title',
+            'thumb',
             'uptime',
             'day',
         ])
@@ -206,9 +208,9 @@ export class EpisodeService {
         .orUpdate(
             [
                 'webtoon_id',
-                'thumb',
                 'episode_id',
                 'title',
+                'thumb',
                 'uptime',
                 'day',
             ],

@@ -7,7 +7,7 @@ import { UserModule } from './user/user.module';
 import { CommentModule } from './webtoon/comment/comment.module';
 import { ReplyModule } from './webtoon/reply/reply.module';
 
-import config from './ormconfig';
+import config from './ormconfig'
 
 @Module({
   imports: [

@@ -25,17 +25,31 @@ export class ReplyService {
             'reply_text',
             'owner',
             'owner_id',
-            'uptime'
+            'uptime',
+            'day'
         ])
         .values({
             comment_id: parseInt(replyData.comment_id),
             reply_text: replyData.reply_text,
             owner: replyData.owner,
             owner_id: parseInt(replyData.owner_id),
-            uptime: replyData.uptime
+            uptime: replyData.uptime,
+            day: replyData.day
         })
         .execute()
 
         await this.commentService.increaseCommentReplyCount(replyData.comment_id)
+    }
+
+    /**********내부용**********/
+    async checkNeedClearingReplys() : Promise<void> {
+        const today : Date = new Date()
+        const day : number = today.getDay()
+
+        const reply : ReplyEntity | null = await this.replyRepository.findOneBy({id: 1})
+        if(reply === null || reply.day !== day) {
+            await this.replyRepository.clear()
+            console.log('답글 기록 초기화 성공')
+        }
     }
 }
