@@ -32,3 +32,5 @@ export async function mergeWebtoonDetailData(webtoon: WebtoonDto, webtoonService
         throw new Error(e)
     }
 }
+
+// 레진 데이터 toonflixwebtoon화 시키는 루틴 추가

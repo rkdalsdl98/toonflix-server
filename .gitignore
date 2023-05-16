@@ -40,5 +40,7 @@ ormconfig.ts
 .env
 env
 *.env
+.csv
+*.csv
 
 private

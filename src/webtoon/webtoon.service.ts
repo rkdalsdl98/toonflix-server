@@ -11,9 +11,14 @@ import { mergeWebtoonDetailData } from 'src/lib/webtoonFactory';
 import { EpisodeDto } from './dto/episode.dto';
 import { CountsDto } from './dto/counts.dto';
 
+import { exec } from 'child_process'
+
+import * as fs from 'fs'
+
 require('dotenv').config()
 
 const BASE_URL : string = process.env.BASEURL
+const ABSOLUTE_PATH : string = process.env.ABSOLUTE_PATH
 
 @Injectable()
 export class WebtoonService {
@@ -91,7 +96,62 @@ export class WebtoonService {
         if(webtoon === null || webtoon.day !== day) return true
         return false
     }
+
+    async launchCrawlers() : Promise<void> {
+        try {
+            await this.launchLezhinCrawler()
+        } catch(e) {
+            throw new Error()
+        }
+    }
+
+    async launchLezhinCrawler() : Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            exec(`${ABSOLUTE_PATH}start.bat`, async (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error.toString()}`);
+                    reject()
+                }
     
+                if (stderr) {
+                    console.error(`exec stderr: ${stderr.toString()}`);
+                    reject()
+                }
+                const lezhinDatas : string[] = this.readCsvFile('lezhin')
+                // 데이터 DB에 추가 하는 루틴 추가
+                resolve()
+            })
+        })
+    }
+
+    readCsvFile(filename : string) : string[] {
+        const csv = fs.readFileSync(`${ABSOLUTE_PATH}toonflix-server/${filename}.csv`, 'utf-8')
+        const csvToString : string = csv.toString().replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎ\.\,\r\n]/g, "")
+        const csvToArray : string[] = csvToString.split(/\r|\n/).filter(item => item !== "")
+        
+        return csvToArray
+    }
+
+    async lanchNaverCrawler() : Promise<void> {
+        const naver = await axios.get(`${BASE_URL}today`)
+        const naverDatas = naver.data
+
+        const today : Date = new Date()
+        const day : number = today.getDay()
+
+        for(let i=0; i<naverDatas.length; ++i) {
+            const { id, title, thumb } = naverDatas[i]
+            const webtoon : WebtoonDto = {
+                webtoon_id: id,
+                title,
+                thumb,
+                day,
+                company: 'naver'
+            }
+            mergeWebtoonDetailData(webtoon, this)
+        }
+    }
+
     async insertOrUpdateWebtoon(webtoon: ToonFlixWebtoonDto[] | ToonFlixWebtoonDto) : Promise<InsertResult> {
         return await this.webtoonRepository.createQueryBuilder()
         .insert()
@@ -136,24 +196,7 @@ export class WebtoonService {
                 console.log('웹툰 로드 시작.')
 
                 await this.webtoonRepository.clear()
-            
-                const requestList = await axios.get(`${BASE_URL}today`)
-                const list = requestList.data
-
-                const today : Date = new Date()
-                const day : number = today.getDay()
-
-                for(let i=0; i<list.length; ++i) {
-                    const { id, title, thumb } = list[i]
-                    const webtoon : WebtoonDto = {
-                        webtoon_id: id,
-                        title,
-                        thumb,
-                        day,
-                        company: 'naver'
-                    }
-                    mergeWebtoonDetailData(webtoon, this)
-                }
+                //await this.launchCrawlers()
             }
             console.log('웹툰 로드 완료.')
         } catch(e) {

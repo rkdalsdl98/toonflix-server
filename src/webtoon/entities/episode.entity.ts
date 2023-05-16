@@ -37,7 +37,8 @@ export class EpisodeEntity extends BaseEntity{
 
     @Column({
         nullable: false,
-        length: 10
+        length: 10,
+        default: ""
     })
     uptime: string
 
