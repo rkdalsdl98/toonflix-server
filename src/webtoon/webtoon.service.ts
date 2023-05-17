@@ -7,13 +7,11 @@ import { WebtoonEntity } from './entities/webtoon.entity';
 import { EpisodeEntity } from './entities/episode.entity';
 import axios from 'axios';
 import { WebtoonDto } from './dto/webtoon.dto';
-import { mergeWebtoonDetailData } from 'src/lib/webtoonFactory';
+import { mergeWebtoonDetailData, initLezhinWebtoons } from 'src/lib/webtoonFactory';
 import { EpisodeDto } from './dto/episode.dto';
 import { CountsDto } from './dto/counts.dto';
 
 import { exec } from 'child_process'
-
-import * as fs from 'fs'
 
 require('dotenv').config()
 
@@ -100,6 +98,7 @@ export class WebtoonService {
     async launchCrawlers() : Promise<void> {
         try {
             await this.launchLezhinCrawler()
+            await this.lanchNaverCrawler()
         } catch(e) {
             throw new Error()
         }
@@ -117,19 +116,10 @@ export class WebtoonService {
                     console.error(`exec stderr: ${stderr.toString()}`);
                     reject()
                 }
-                const lezhinDatas : string[] = this.readCsvFile('lezhin')
-                // 데이터 DB에 추가 하는 루틴 추가
+                await initLezhinWebtoons(this)
                 resolve()
             })
         })
-    }
-
-    readCsvFile(filename : string) : string[] {
-        const csv = fs.readFileSync(`${ABSOLUTE_PATH}toonflix-server/${filename}.csv`, 'utf-8')
-        const csvToString : string = csv.toString().replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎ\.\,\r\n]/g, "")
-        const csvToArray : string[] = csvToString.split(/\r|\n/).filter(item => item !== "")
-        
-        return csvToArray
     }
 
     async lanchNaverCrawler() : Promise<void> {
@@ -161,9 +151,7 @@ export class WebtoonService {
             'webtoon_id',
             'day',
             'company',
-            'about',
             'genre',
-            'age',
         ])
         .values(webtoon)
         .orUpdate(
@@ -175,9 +163,7 @@ export class WebtoonService {
                 'like_count',
                 'day',
                 'company',
-                'about',
                 'genre',
-                'age',
             ],
             [
                 'id'
@@ -196,7 +182,9 @@ export class WebtoonService {
                 console.log('웹툰 로드 시작.')
 
                 await this.webtoonRepository.clear()
-                //await this.launchCrawlers()
+                await this.launchCrawlers()
+
+                return
             }
             console.log('웹툰 로드 완료.')
         } catch(e) {
@@ -274,7 +262,7 @@ export class EpisodeService {
                 console.log('에피소드 로드 시작.')
 
                 const webtoons : WebtoonEntity[] = await this.webtoonRepository.find()
-                if(webtoons.length > 0) {
+                if(webtoons.length > 0 || !webtoons) {
                     await this.episodeRepository.clear()
 
                     const today : Date = new Date()
@@ -282,6 +270,9 @@ export class EpisodeService {
                     const episodes : EpisodeDto[] = []
 
                     for(let i=0; i<webtoons.length; ++i) {
+                        const company = webtoons[i].company
+                        if(company === 'lezhin') continue
+
                         const webtoonId = webtoons[i].webtoon_id
                         const requestEpisodes = await axios.get(`${BASE_URL}${webtoonId}/episodes`)
 

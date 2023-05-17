@@ -62,19 +62,7 @@ export class WebtoonEntity extends BaseEntity {
 
     @Column({
         nullable: false,
-        type: "text",
-    })
-    about: string
-
-    @Column({
-        nullable: false,
         length: 50
     })
-    genre: string
-
-    @Column({
-        nullable: false,
-        length: 10
-    })
-    age: string
+    genre : string
 }
