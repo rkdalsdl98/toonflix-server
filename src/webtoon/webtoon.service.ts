@@ -180,11 +180,8 @@ export class WebtoonService {
             const needUpdate : boolean = await this.checkUpdatedByDay()
             if(needUpdate) {
                 console.log('웹툰 로드 시작.')
-
                 await this.webtoonRepository.clear()
                 await this.launchCrawlers()
-
-                return
             }
             console.log('웹툰 로드 완료.')
         } catch(e) {
