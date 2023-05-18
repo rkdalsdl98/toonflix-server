@@ -74,7 +74,7 @@ export async function initLezhinWebtoons(webtoonService?: WebtoonService) : Prom
 function readCsvFile(filename : string) : string[] {
     try {
         const csv = fs.readFileSync(`${ABSOLUTE_PATH}toonflix-server/${filename}.csv`, 'utf-8')
-        const csvToString : string = csv.toString().replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎ\.\,\r\n\/\:\?\!]/g, "")
+        const csvToString : string = csv.toString().replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎ\.\,\r\n\/\:\?\!\_]/g, "")
         const csvToArray : string[] = csvToString.split(/\r|\n/).filter(item => item !== "")
         
         return csvToArray
@@ -82,5 +82,3 @@ function readCsvFile(filename : string) : string[] {
         throw new Error()
     }
 }
-
-// 레진 데이터 toonflixwebtoon화 시키는 루틴 추가
