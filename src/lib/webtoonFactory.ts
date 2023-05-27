@@ -45,17 +45,20 @@ export async function initLezhinWebtoons(webtoonService?: WebtoonService) : Prom
             
             readCsvFile('lezhin')
             .forEach(webtoon => {
-                const [webtoonId, title, genre, thumb] = webtoon.split(',')
-                if(webtoonId !== 'noway') {
-                    const fromToonFlixDto : ToonFlixWebtoonDto = {
-                        title,
-                        genre,
-                        thumb,
-                        webtoon_id: webtoonId,
-                        day,
-                        company: 'lezhin'
+                const splitList = webtoon.split(',')
+                if(splitList.length === 4) {
+                    const [webtoonId, title, genre, thumb] = splitList
+                    if(webtoonId !== 'noway') {
+                        const fromToonFlixDto : ToonFlixWebtoonDto = {
+                            title,
+                            genre,
+                            thumb,
+                            webtoon_id: webtoonId,
+                            day,
+                            company: 'lezhin'
+                        }
+                        toonflixWebtoons.push(fromToonFlixDto)
                     }
-                    toonflixWebtoons.push(fromToonFlixDto)
                 }
             })
 

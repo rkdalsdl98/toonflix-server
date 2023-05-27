@@ -32,14 +32,19 @@ export class WebtoonController {
         }
     }
 
-    @Get('list')
-    getAllToons() : Promise<WebtoonEntity[] | null> {
-        return this.webtoonService.getAllToons()
+    @Get('list/:category')
+    getAllToons(@Param('category') category : string) : Promise<WebtoonEntity[] | null> {
+        return this.webtoonService.getAllToons(category)
     }
 
     @Get('episodes')
     getAllEpisodes() : Promise<EpisodeEntity[] | null> {
         return this.episodeService.getAllEpisode()
+    }
+
+    @Get('best')
+    getBestWebtoon() : Promise<WebtoonEntity> {
+        return this.webtoonService.getBestWebtoon()
     }
 
     /* 쿼리, 파라미터를 받는 라우터와 위치를 나누어야 하며 */

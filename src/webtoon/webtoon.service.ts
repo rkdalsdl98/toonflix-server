@@ -24,12 +24,29 @@ export class WebtoonService {
         @InjectRepository(WebtoonEntity)
         private webtoonRepository : Repository<WebtoonEntity>,
     ) {}
+
     async findOneById(id : string): Promise<WebtoonEntity | null> {
         return await this.webtoonRepository.findOneBy({ webtoon_id: id });
     }
 
-    async getAllToons() : Promise<WebtoonEntity[] | null> {
-        return await this.webtoonRepository.find({})
+    async getAllToons(category : string) : Promise<WebtoonEntity[] | null> {
+        if(category === 'all') 
+            return await this.webtoonRepository.find()
+
+        return await this.webtoonRepository.findBy({
+            company: category
+        })
+    }
+
+    async getBestWebtoon() : Promise<WebtoonEntity> {
+        const webtoons : WebtoonEntity[] = await this.getAllToons('all')
+        return webtoons.sort((a, b) => {
+            const { like_count: aCount } = a
+            const { like_count: bCount } = b
+            if(aCount > bCount) return -1
+            else if(aCount < bCount) return 1
+            return 0
+        })[0]
     }
 
     async getWebtoonCounts(webtoonId : string) : Promise<CountsDto> {
@@ -97,8 +114,8 @@ export class WebtoonService {
 
     async launchCrawlers() : Promise<void> {
         try {
-            await this.launchLezhinCrawler()
             await this.lanchNaverCrawler()
+            await this.launchLezhinCrawler()
         } catch(e) {
             throw new Error()
         }
