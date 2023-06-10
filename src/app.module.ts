@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { CommentModule } from './webtoon/comment/comment.module';
 import { ReplyModule } from './webtoon/reply/reply.module';
+import { NoticeModule } from './notice/notice.module';
 
 import config from './ormconfig';
 
@@ -15,7 +16,8 @@ import config from './ormconfig';
     WebtoonModule,
     UserModule,
     CommentModule,
-    ReplyModule
+    ReplyModule,
+    NoticeModule
   ],
   controllers: [AppController],
   providers: [AppService],
