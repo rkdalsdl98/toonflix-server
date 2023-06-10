@@ -7,14 +7,17 @@ import { WebtoonEntity } from './entities/webtoon.entity';
 import { EpisodeEntity } from './entities/episode.entity';
 import axios from 'axios';
 import { WebtoonDto } from './dto/webtoon.dto';
-import { mergeWebtoonDetailData } from 'src/lib/webtoonFactory';
+import { mergeWebtoonDetailData, initLezhinWebtoons } from 'src/lib/webtoonFactory';
 import { EpisodeDto } from './dto/episode.dto';
 import { CountsDto } from './dto/counts.dto';
 import { load } from 'cheerio';
 
+import { exec } from 'child_process'
+
 require('dotenv').config()
 
 const BASE_URL : string = process.env.BASEURL
+const ABSOLUTE_PATH : string = process.env.ABSOLUTE_PATH
 
 @Injectable()
 export class WebtoonService {
@@ -27,8 +30,24 @@ export class WebtoonService {
         return await this.webtoonRepository.findOneBy({ webtoon_id: id });
     }
 
-    async getAllToons() : Promise<WebtoonEntity[] | null> {
-        return await this.webtoonRepository.find({})
+    async getAllToons(category : string) : Promise<WebtoonEntity[] | null> {
+        if(category === 'all') 
+            return await this.webtoonRepository.find()
+
+        return await this.webtoonRepository.findBy({
+            company: category
+        })
+    }
+
+    async getBestWebtoon() : Promise<WebtoonEntity> {
+        const webtoons : WebtoonEntity[] = await this.getAllToons('all')
+        return webtoons.sort((a, b) => {
+            const { like_count: aCount } = a
+            const { like_count: bCount } = b
+            if(aCount > bCount) return -1
+            else if(aCount < bCount) return 1
+            return 0
+        })[0]
     }
 
     async getWebtoonCounts(webtoonId : string) : Promise<CountsDto> {
@@ -93,7 +112,54 @@ export class WebtoonService {
         if(webtoon === null || webtoon.day !== day) return true
         return false
     }
+
+    async launchCrawlers() : Promise<void> {
+        try {
+            await this.lanchNaverCrawler()
+            await this.launchLezhinCrawler()
+        } catch(e) {
+            throw new Error()
+        }
+    }
+
+    async launchLezhinCrawler() : Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            exec(`${ABSOLUTE_PATH}start.bat`, async (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error.toString()}`);
+                    reject()
+                }
     
+                if (stderr) {
+                    console.error(`exec stderr: ${stderr.toString()}`);
+                    reject()
+                }
+                await initLezhinWebtoons(this)
+                resolve()
+            })
+        })
+    }
+
+    async lanchNaverCrawler() : Promise<void> {
+        const naver = await axios.get(`${BASE_URL}today`)
+        const naverDatas = naver.data
+
+        const today : Date = new Date()
+        const day : number = today.getDay()
+
+        for(let i=0; i<naverDatas.length; ++i) {
+            const { id, title, thumb } = naverDatas[i]
+            const webtoon : WebtoonDto = {
+                webtoon_id: id,
+                title,
+                thumb,
+                day,
+                company: 'naver'
+            }
+            mergeWebtoonDetailData(webtoon, this)
+        }
+    }
+
     async insertOrUpdateWebtoon(webtoon: ToonFlixWebtoonDto[] | ToonFlixWebtoonDto) : Promise<InsertResult> {
         return await this.webtoonRepository.createQueryBuilder()
         .insert()
@@ -103,9 +169,7 @@ export class WebtoonService {
             'webtoon_id',
             'day',
             'company',
-            'about',
             'genre',
-            'age',
         ])
         .values(webtoon)
         .orUpdate(
@@ -117,9 +181,7 @@ export class WebtoonService {
                 'like_count',
                 'day',
                 'company',
-                'about',
                 'genre',
-                'age',
             ],
             [
                 'id'
@@ -136,26 +198,8 @@ export class WebtoonService {
             const needUpdate : boolean = await this.checkUpdatedByDay()
             if(needUpdate) {
                 console.log('웹툰 로드 시작.')
-
                 await this.webtoonRepository.clear()
-            
-                const requestList = await axios.get(`${BASE_URL}today`)
-                const list = requestList.data
-
-                const today : Date = new Date()
-                const day : number = today.getDay()
-
-                for(let i=0; i<list.length; ++i) {
-                    const { id, title, thumb } = list[i]
-                    const webtoon : WebtoonDto = {
-                        webtoon_id: id,
-                        title,
-                        thumb,
-                        day,
-                        company: 'naver'
-                    }
-                    mergeWebtoonDetailData(webtoon, this)
-                }
+                await this.launchCrawlers()
             }
             console.log('웹툰 로드 완료.')
         } catch(e) {
@@ -233,7 +277,7 @@ export class EpisodeService {
                 console.log('에피소드 로드 시작.')
 
                 const webtoons : WebtoonEntity[] = await this.webtoonRepository.find()
-                if(webtoons.length > 0) {
+                if(webtoons.length > 0 || !webtoons) {
                     await this.episodeRepository.clear()
 
                     const today : Date = new Date()
@@ -241,6 +285,9 @@ export class EpisodeService {
                     const episodes : EpisodeDto[] = []
 
                     for(let i=0; i<webtoons.length; ++i) {
+                        const company = webtoons[i].company
+                        if(company === 'lezhin') continue
+
                         const webtoonId = webtoons[i].webtoon_id
                         const requestEpisodes = await axios.get(`${BASE_URL}${webtoonId}/episodes`)
 

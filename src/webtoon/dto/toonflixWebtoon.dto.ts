@@ -15,13 +15,8 @@ export class ToonFlixWebtoonDto {
 
     @IsString()
     readonly company : string
-    
-    @IsString()
-    readonly about: string
 
     @IsString()
     readonly genre: string
-
-    @IsString()
-    readonly age: string
+    
 }
