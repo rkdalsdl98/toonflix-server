@@ -13,6 +13,12 @@ export class NoticeEntity extends BaseEntity {
 
     @Column({
         nullable: false,
+        length: 50,
+    })
+    title : string
+
+    @Column({
+        nullable: false,
         length: 20,
     })
     category : string
@@ -27,4 +33,10 @@ export class NoticeEntity extends BaseEntity {
         nullable: true,
     })
     imageUrl : string
+
+    @Column({ 
+        nullable: false,
+        length: 20,
+    })
+    updateAt : string
 }

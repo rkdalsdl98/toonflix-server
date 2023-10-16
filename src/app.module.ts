@@ -17,7 +17,8 @@ import config from './ormconfig'
     UserModule,
     CommentModule,
     ReplyModule,
-    NoticeModule
+    NoticeModule,
+    
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -74,12 +74,11 @@ export async function initLezhinWebtoons(webtoonService?: WebtoonService) : Prom
     })
 }
 
-function readCsvFile(filename : string) : string[] {
+export function readCsvFile(filename : string) : string[] {
     try {
         const csv = fs.readFileSync(`${ABSOLUTE_PATH}toonflix-server/${filename}.csv`, 'utf-8')
         const csvToString : string = csv.toString().replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎ\.\,\r\n\/\:\?\!\_]/g, "")
         const csvToArray : string[] = csvToString.split(/\r|\n/).filter(item => item !== "")
-        
         return csvToArray
     } catch(e) {
         throw new Error()

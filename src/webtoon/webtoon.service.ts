@@ -10,7 +10,6 @@ import { WebtoonDto } from './dto/webtoon.dto';
 import { mergeWebtoonDetailData, initLezhinWebtoons } from 'src/lib/webtoonFactory';
 import { EpisodeDto } from './dto/episode.dto';
 import { CountsDto } from './dto/counts.dto';
-import { load } from 'cheerio';
 
 import { exec } from 'child_process'
 

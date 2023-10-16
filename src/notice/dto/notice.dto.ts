@@ -9,4 +9,7 @@ export class NoticeDto {
 
     @IsString()
     category : string
+
+    @IsString()
+    title : string
 }
