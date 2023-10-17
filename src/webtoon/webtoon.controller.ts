@@ -7,7 +7,6 @@ import {
 import { WebtoonEntity } from './entities/webtoon.entity';
 import { EpisodeEntity } from './entities/episode.entity';
 import { CountsDto } from './dto/counts.dto';
-import { readCsvFile } from 'src/lib/webtoonFactory';
 
 @Controller('webtoon')
 export class WebtoonController {
@@ -17,7 +16,6 @@ export class WebtoonController {
         private readonly episodeService: EpisodeService
     ) {
         this.init()
-        readCsvFile('lezhin')
     }
 
     /**

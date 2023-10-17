@@ -20,6 +20,44 @@
 
 (수집된 정보들은 .csv 파일형식으로 저장되며 서버에서 파일을 불러와 읽은 이후 데이터를 가공하여 저장합니다.)  
 
+### .bat 파일형식에 크롤러를 내부적으로 실행하는 코드
+
+```
+async launchLezhinCrawler() : Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+      exec(`${ABSOLUTE_PATH}start.bat`, async (error, stdout, stderr) => {
+          if (error) {
+              console.error(`exec error: ${error.toString()}`);
+              reject()
+          }
+
+          if (stderr) {
+              console.error(`exec stderr: ${stderr.toString()}`);
+              reject()
+          }
+          await initLezhinWebtoons(this)
+          resolve()
+      })
+  })
+}
+```  
+.csv 파일을 읽어오는 과정에 맨앞단에 한 글자씩 불필요한 데이터가 포함되어 넘어오는 현상을 정규식으로 처리했습니다.
+
+### 정규식 적용 코드
+
+```
+function readCsvFile(filename : string) : string[] {
+    try {
+        const csv = fs.readFileSync(`${ABSOLUTE_PATH}toonflix-server/${filename}.csv`, 'utf-8')
+        const csvToString : string = csv.toString().replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎ\.\,\r\n\/\:\?\!\_]/g, "")
+        const csvToArray : string[] = csvToString.split(/\r|\n/).filter(item => item !== "")
+        return csvToArray
+    } catch(e) {
+        throw new Error()
+    }
+}
+```
+
 # ERD
 
 <img src='https://velog.velcdn.com/images/rkdalsdl98/post/c984f8b1-5059-4006-ad56-1444131c1921/image.png'>
