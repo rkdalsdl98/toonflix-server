@@ -9,13 +9,13 @@
     <img src="https://img.shields.io/badge/selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white"> <img src="https://img.shields.io/badge/beautifulsoup-important?style=for-the-badge&logo=beautifulsoup&logoColor=white">   
 </div>   
 
-# 개요  
+## 개요  
 
 다양한 플랫폼의 웹툰을 하나의 앱에서 찾고, 매일 초기화 되는 평가로 잘 알려지지 않은 나만 알고 있던 꿀잼 웹툰을 추천 해보자!    
 
 #### ** 웹툰을 불법복제 하지 않고 해당 웹툰 플랫폼으로 이동하는 방식입니다. **  
 
-# Crawling  
+## Crawling  
 
 ## 학습 용도로 사용되었으며 수익창출에 목적을 가지지 않습니다!  
 
@@ -66,7 +66,7 @@ function readCsvFile(filename : string) : string[] {
 }
 ```  
 
-# ERD
+## ERD
 
 <img src='https://velog.velcdn.com/images/rkdalsdl98/post/c984f8b1-5059-4006-ad56-1444131c1921/image.png'>  
 
