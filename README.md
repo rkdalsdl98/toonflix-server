@@ -1,16 +1,24 @@
-# 💡 Topic !
-
-매일 여러 플랫폼들의 웹툰을 소개받고 추천 하자!
+<h2>📚 STACKS</h2>
+<div>
+  <img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"> <img src="https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white"> <img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">  
+</div>  
+<div>  
+    <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/typeorm-2D3748?style=for-the-badge">  
+</div>   
+<div>  
+    <img src="https://img.shields.io/badge/selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white"> <img src="https://img.shields.io/badge/beautifulsoup-43B02A?style=for-the-badge&logo=beautifulsoup&logoColor=white">   
+</div>   
 
 # 개요  
 
-1인 개발 프로젝트로 나만이 알고 있는 꿀잼 웹툰을 추천 서로에게 추천하자! 라는 취지에서 만들게된 웹툰 모음집 앱 입니다!  
+다양한 플랫폼의 웹툰을 하나의 앱에서 찾고, 매일 초기화 되는 평가로 잘 알려지지 않은 나만 알고 있던 꿀잼 웹툰을 추천 해보자!    
 
-웹툰을 앱에 로드하는 형식이 아닌, 웹툰을 제공하는 사이트로 이동하게 만들었습니다.  
+#### ** 웹툰을 불법복제 하지 않고 해당 웹툰 플랫폼으로 이동하는 방식입니다. **  
 
 # Crawling  
 
 ## 학습 용도로 사용되었으며 수익창출에 목적을 가지지 않습니다!  
+
 <h3>네이버</h3>  
   노마드 코더에서 학습용도로 제공하는 API데이터를 사용 했습니다.  
 <h3>레진, 다음</h3>  
@@ -20,7 +28,7 @@
 
 (수집된 정보들은 .csv 파일형식으로 저장되며 서버에서 파일을 불러와 읽은 이후 데이터를 가공하여 저장합니다.)  
 
-### .bat 파일형식에 크롤러를 내부적으로 실행하는 코드
+### .bat 파일형식에 크롤러를 내부적으로 실행하는 코드  
 
 ```
 async launchLezhinCrawler() : Promise<void> {
@@ -43,7 +51,7 @@ async launchLezhinCrawler() : Promise<void> {
 ```  
 .csv 파일을 읽어오는 과정에 맨앞단에 한 글자씩 불필요한 데이터가 포함되어 넘어오는 현상을 정규식으로 처리했습니다.
 
-### 정규식 적용 코드
+### 정규식 적용 코드  
 
 ```
 function readCsvFile(filename : string) : string[] {
@@ -56,25 +64,10 @@ function readCsvFile(filename : string) : string[] {
         throw new Error()
     }
 }
-```
+```  
 
 # ERD
 
-<img src='https://velog.velcdn.com/images/rkdalsdl98/post/c984f8b1-5059-4006-ad56-1444131c1921/image.png'>
-
-# Stack
-
-```bash
-# 이미지 출처 - 점핏 https://www.jumpit.co.kr/
-```
-
-FrontEnd
-<img src='https://cdn.jumpit.co.kr/images/stacks/flutter.png' width="50" height="50"> <img src='https://cdn.jumpit.co.kr/images/stacks/dart.png' width="50" height="50">
-
-BackEnd
-<img src='https://cdn.jumpit.co.kr/images/stacks/typescript.png' width="50" height="50"> <img src='https://cdn.jumpit.co.kr/images/stacks/TypeORM.png' width="50" height="50"> <img src='https://cdn.jumpit.co.kr/images/stacks/nestjs.png' width="50" height="50"> <img src='https://cdn.jumpit.co.kr/images/stacks/node.js.png' width="50" height="50"><img src='https://cdn.jumpit.co.kr/images/stacks/python.png' width="50" height="50">
-
-Database
-<img src='https://cdn.jumpit.co.kr/images/stacks/mysql.png' width="50" height="50">  
+<img src='https://velog.velcdn.com/images/rkdalsdl98/post/c984f8b1-5059-4006-ad56-1444131c1921/image.png'>  
 
 [APP 레포지토리로 이동하기](https://github.com/rkdalsdl98/toonflix)
