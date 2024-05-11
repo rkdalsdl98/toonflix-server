@@ -6,7 +6,7 @@
     <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/typeorm-2D3748?style=for-the-badge">  
 </div>   
 <div>  
-    <img src="https://img.shields.io/badge/selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white"> <img src="https://img.shields.io/badge/beautifulsoup-43B02A?style=for-the-badge&logo=beautifulsoup&logoColor=white">   
+    <img src="https://img.shields.io/badge/selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white"> <img src="https://img.shields.io/badge/beautifulsoup-important?style=for-the-badge&logo=beautifulsoup&logoColor=white">   
 </div>   
 
 # 개요  
