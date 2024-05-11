@@ -49,6 +49,49 @@ async launchLezhinCrawler() : Promise<void> {
   })
 }
 ```  
+webtoonservice를 파라미터로 받게 되면 수집된 데이터를 서비스를 통해 바로 DB와 동기화 시키고, 그렇지 않다면 수집된 데이터를 반환하게 됩니다.  
+
+```
+export async function initLezhinWebtoons(webtoonService: WebtoonService) : Promise<void>
+export async function initLezhinWebtoons(webtoonService?: WebtoonService) : Promise<void | ToonFlixWebtoonDto[]> {
+    return new Promise<void | ToonFlixWebtoonDto[]>(async (resolve, reject) => {
+        try {
+            const today : Date = new Date()
+            const day : number = today.getDay()
+            const toonflixWebtoons : ToonFlixWebtoonDto[] = [];
+            
+            readCsvFile('lezhin')
+            .forEach(webtoon => {
+                const splitList = webtoon.split(',')
+                if(splitList.length === 4) {
+                    const [webtoonId, title, genre, thumb] = splitList
+                    if(webtoonId !== 'noway') {
+                        const fromToonFlixDto : ToonFlixWebtoonDto = {
+                            title,
+                            genre,
+                            thumb,
+                            webtoon_id: webtoonId,
+                            day,
+                            company: 'lezhin'
+                        }
+                        toonflixWebtoons.push(fromToonFlixDto)
+                    }
+                }
+            })
+
+            if(webtoonService) {
+                await webtoonService.insertOrUpdateWebtoon(toonflixWebtoons)
+                resolve()
+            }
+            else resolve(toonflixWebtoons)
+        } catch (e) {
+            console.log(e)
+            reject()
+        }
+    })
+}
+```
+
 .csv 파일을 읽어오는 과정에 맨앞단에 한 글자씩 불필요한 데이터가 포함되어 넘어오는 현상을 정규식으로 처리했습니다.
 
 ### 정규식 적용 코드  
