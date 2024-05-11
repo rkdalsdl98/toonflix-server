@@ -64,13 +64,13 @@ export async function initLezhinWebtoons(webtoonService?: WebtoonService) : Prom
             .forEach(webtoon => {
                 const splitList = webtoon.split(',')
                 if(splitList.length === 4) {
-                    const [webtoonId, title, genre, thumb] = splitList
-                    if(webtoonId !== 'noway') {
+                    const [webtoon_id, title, genre, thumb] = splitList
+                    if(webtoon_id !== 'noway') {
                         const fromToonFlixDto : ToonFlixWebtoonDto = {
                             title,
                             genre,
                             thumb,
-                            webtoon_id: webtoonId,
+                            webtoon_id,
                             day,
                             company: 'lezhin'
                         }
